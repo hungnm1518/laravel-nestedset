@@ -22,18 +22,19 @@ class Collection extends BaseCollection
 
         /** @var NodeTrait|Model $node */
         foreach ($this->items as $node) {
-            if ( ! $node->getParentId()) {
+            if (!$node->getParentId()) {
                 $node->setRelation('parent', null);
             }
 
-            $children = $groupedNodes->get($node->getKey(), [ ]);
+            $children = $groupedNodes->get($node->getKey(), []);
 
             /** @var Model|NodeTrait $child */
             foreach ($children as $child) {
                 $child->setRelation('parent', $node);
             }
 
-            $node->setRelation('children', BaseCollection::make($children));
+            if(!empty($children))
+                $node->setRelation('children', BaseCollection::make($children));
         }
 
         return $this;
@@ -58,13 +59,13 @@ class Collection extends BaseCollection
 
         $this->linkNodes();
 
-        $items = [ ];
+        $items = [];
 
         $root = $this->getRootNodeId($root);
 
         /** @var Model|NodeTrait $node */
         foreach ($this->items as $node) {
-            if ($node->getParentId() == $root) {
+            if ($node->getParentId() === $root) {
                 $items[] = $node;
             }
         }
