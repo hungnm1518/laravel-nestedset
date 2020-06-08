@@ -88,18 +88,18 @@ trait NodeTrait
     {
         $this->moved = false;
 
-        if ( ! $this->pending && ! $this->exists) {
+        if (!$this->pending && !$this->exists) {
             $this->makeRoot();
         }
 
-        if ( ! $this->pending) return;
+        if (!$this->pending) return;
 
-        $method = 'action'.ucfirst(array_shift($this->pending));
+        $method = 'action' . ucfirst(array_shift($this->pending));
         $parameters = $this->pending;
 
         $this->pending = null;
 
-        $this->moved = call_user_func_array([ $this, $method ], $parameters);
+        $this->moved = call_user_func_array([$this, $method], $parameters);
     }
 
     /**
@@ -132,7 +132,7 @@ trait NodeTrait
     protected function actionRoot()
     {
         // Simplest case that do not affect other nodes.
-        if ( ! $this->exists) {
+        if (!$this->exists) {
             $cut = $this->getLowerBound() + 1;
 
             $this->setLft($cut);
@@ -168,7 +168,7 @@ trait NodeTrait
 
         $cut = $prepend ? $parent->getLft() + 1 : $parent->getRgt();
 
-        if ( ! $this->insertAt($cut)) {
+        if (!$this->insertAt($cut)) {
             return false;
         }
 
@@ -212,7 +212,7 @@ trait NodeTrait
      */
     public function refreshNode()
     {
-        if ( ! $this->exists || static::$actionsPerformed === 0) return;
+        if (!$this->exists || static::$actionsPerformed === 0) return;
 
         $attributes = $this->newNestedSetQuery()->getNodeData($this->getKey());
 
@@ -282,7 +282,7 @@ trait NodeTrait
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getSiblingsAndSelf(array $columns = [ '*' ])
+    public function getSiblingsAndSelf(array $columns = ['*'])
     {
         return $this->siblingsAndSelf()->get($columns);
     }
@@ -468,7 +468,7 @@ trait NodeTrait
             ->assertNotDescendant($node)
             ->assertSameScope($node);
 
-        if ( ! $this->isSiblingOf($node)) {
+        if (!$this->isSiblingOf($node)) {
             $this->setParent($node->getRelationValue('parent'));
         }
 
@@ -498,7 +498,7 @@ trait NodeTrait
      */
     public function insertBeforeNode(self $node)
     {
-        if ( ! $this->beforeNode($node)->save()) return false;
+        if (!$this->beforeNode($node)->save()) return false;
 
         // We'll update the target node since it will be moved
         $node->refreshNode();
@@ -534,7 +534,7 @@ trait NodeTrait
             ->skip($amount - 1)
             ->first();
 
-        if ( ! $sibling) return false;
+        if (!$sibling) return false;
 
         return $this->insertBeforeNode($sibling);
     }
@@ -553,7 +553,7 @@ trait NodeTrait
             ->skip($amount - 1)
             ->first();
 
-        if ( ! $sibling) return false;
+        if (!$sibling) return false;
 
         return $this->insertAfterNode($sibling);
     }
@@ -698,16 +698,16 @@ trait NodeTrait
      */
     public function applyNestedSetScope($query, $table = null)
     {
-        if ( ! $scoped = $this->getScopeAttributes()) {
+        if (!$scoped = $this->getScopeAttributes()) {
             return $query;
         }
 
-        if ( ! $table) {
+        if (!$table) {
             $table = $this->getTable();
         }
 
         foreach ($scoped as $attribute) {
-            $query->where($table.'.'.$attribute, '=',
+            $query->where($table . '.' . $attribute, '=',
                           $this->getAttributeValue($attribute));
         }
 
@@ -784,7 +784,7 @@ trait NodeTrait
      */
     public function getNodeHeight()
     {
-        if ( ! $this->exists) return 2;
+        if (!$this->exists) return 2;
 
         return $this->getRgt() - $this->getLft() + 1;
     }
@@ -810,7 +810,7 @@ trait NodeTrait
      */
     public function setParentIdAttribute($value)
     {
-        if ($this->getParentId() == $value) return;
+        if ($this->getParentId() === $value) return;
 
         if ($value) {
             $this->appendToNode($this->newScopedQuery()->findOrFail($value));
@@ -834,7 +834,7 @@ trait NodeTrait
      */
     public function isLeaf()
     {
-        return $this->getLft() + 1 == $this->getRgt();
+        return $this->getLft() + 1 === $this->getRgt();
     }
 
     /**
@@ -906,7 +906,7 @@ trait NodeTrait
      *
      * @return self
      */
-    public function getNextNode(array $columns = [ '*' ])
+    public function getNextNode(array $columns = ['*'])
     {
         return $this->nextNodes()->defaultOrder()->first($columns);
     }
@@ -920,7 +920,7 @@ trait NodeTrait
      *
      * @return self
      */
-    public function getPrevNode(array $columns = [ '*' ])
+    public function getPrevNode(array $columns = ['*'])
     {
         return $this->prevNodes()->defaultOrder('desc')->first($columns);
     }
@@ -930,7 +930,7 @@ trait NodeTrait
      *
      * @return Collection
      */
-    public function getAncestors(array $columns = [ '*' ])
+    public function getAncestors(array $columns = ['*'])
     {
         return $this->ancestors()->get($columns);
     }
@@ -940,7 +940,7 @@ trait NodeTrait
      *
      * @return Collection|self[]
      */
-    public function getDescendants(array $columns = [ '*' ])
+    public function getDescendants(array $columns = ['*'])
     {
         return $this->descendants()->get($columns);
     }
@@ -950,7 +950,7 @@ trait NodeTrait
      *
      * @return Collection|self[]
      */
-    public function getSiblings(array $columns = [ '*' ])
+    public function getSiblings(array $columns = [ '*'])
     {
         return $this->siblings()->get($columns);
     }
@@ -960,7 +960,7 @@ trait NodeTrait
      *
      * @return Collection|self[]
      */
-    public function getNextSiblings(array $columns = [ '*' ])
+    public function getNextSiblings(array $columns = [ '*'])
     {
         return $this->nextSiblings()->get($columns);
     }
@@ -970,7 +970,7 @@ trait NodeTrait
      *
      * @return Collection|self[]
      */
-    public function getPrevSiblings(array $columns = [ '*' ])
+    public function getPrevSiblings(array $columns = [ '*'])
     {
         return $this->prevSiblings()->get($columns);
     }
@@ -980,7 +980,7 @@ trait NodeTrait
      *
      * @return self
      */
-    public function getNextSibling(array $columns = [ '*' ])
+    public function getNextSibling(array $columns = [ '*'])
     {
         return $this->nextSiblings()->defaultOrder()->first($columns);
     }
@@ -990,7 +990,7 @@ trait NodeTrait
      *
      * @return self
      */
-    public function getPrevSibling(array $columns = [ '*' ])
+    public function getPrevSibling(array $columns = [ '*'])
     {
         return $this->prevSiblings()->defaultOrder('desc')->first($columns);
     }
@@ -1030,7 +1030,7 @@ trait NodeTrait
      */
     public function isChildOf(self $other)
     {
-        return $this->getParentId() == $other->getKey();
+        return $this->getParentId() === $other->getKey();
     }
 
     /**
@@ -1042,7 +1042,7 @@ trait NodeTrait
      */
     public function isSiblingOf(self $other)
     {
-        return $this->getParentId() == $other->getParentId();
+        return $this->getParentId() === $other->getParentId();
     }
 
     /**
@@ -1099,7 +1099,7 @@ trait NodeTrait
      */
     protected function hardDeleting()
     {
-        return ! $this->usesSoftDelete() || $this->forceDeleting;
+        return!$this->usesSoftDelete() || $this->forceDeleting;
     }
 
     /**
@@ -1107,7 +1107,7 @@ trait NodeTrait
      */
     public function getBounds()
     {
-        return [ $this->getLft(), $this->getRgt() ];
+        return [ $this->getLft(), $this->getRgt()];
     }
 
     /**
@@ -1178,7 +1178,7 @@ trait NodeTrait
      */
     protected function assertNodeExists(self $node)
     {
-        if ( ! $node->getLft() || ! $node->getRgt()) {
+        if (!$node->getLft() ||!$node->getRgt()) {
             throw new LogicException('Node must exists.');
         }
 
@@ -1190,7 +1190,7 @@ trait NodeTrait
      */
     protected function assertSameScope(self $node)
     {
-        if ( ! $scoped = $this->getScopeAttributes()) {
+        if (!$scoped = $this->getScopeAttributes()) {
             return;
         }
 
