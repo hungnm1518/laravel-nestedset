@@ -33,12 +33,12 @@ class QueryBuilder extends Builder
     {
         $query = $this->toBase();
 
-        $query->where($this->model->getKeyName(), '=', $id);
+        $query->where($this->model->getTable() . '.' . $this->model->getKeyName(), '=', $id);
 
-        $data = $query->first([ $this->model->getLftName(),
-                                $this->model->getRgtName() ]);
+        $data = $query->first([$this->model->getLftName(),
+                                $this->model->getRgtName()]);
 
-        if ( ! $data && $required) {
+        if (!$data && $required) {
             throw new ModelNotFoundException;
         }
 
@@ -165,7 +165,7 @@ class QueryBuilder extends Builder
      *
      * @return \Kalnoy\Nestedset\Collection
      */
-    public function ancestorsAndSelf($id, array $columns = [ '*' ])
+    public function ancestorsAndSelf($id, array $columns = ['*'])
     {
         return $this->whereAncestorOf($id, true)->get($columns);
     }
@@ -285,7 +285,7 @@ class QueryBuilder extends Builder
      *
      * @return Collection
      */
-    public function descendantsOf($id, array $columns = [ '*' ], $andSelf = false)
+    public function descendantsOf($id, array $columns = ['*'], $andSelf = false)
     {
         try {
             return $this->whereDescendantOf($id, 'and', false, $andSelf)->get($columns);
@@ -302,7 +302,7 @@ class QueryBuilder extends Builder
      *
      * @return Collection
      */
-    public function descendantsAndSelf($id, array $columns = [ '*' ])
+    public function descendantsAndSelf($id, array $columns = ['*'])
     {
         return $this->descendantsOf($id, $columns, true);
     }
@@ -335,7 +335,7 @@ class QueryBuilder extends Builder
 
         list($lft,) = $this->wrappedColumns();
 
-        $this->query->whereRaw("{$lft} {$operator} {$value}", [ ], $boolean);
+        $this->query->whereRaw("{$lft} {$operator} {$value}", [], $boolean);
 
         return $this;
     }
@@ -385,7 +385,7 @@ class QueryBuilder extends Builder
      *
      * @return Collection
      */
-    public function leaves(array $columns = [ '*'])
+    public function leaves(array $columns = ['*'])
     {
         return $this->whereIsLeaf()->get($columns);
     }
@@ -399,7 +399,7 @@ class QueryBuilder extends Builder
      */
     public function withDepth($as = 'depth')
     {
-        if ($this->query->columns === null) $this->query->columns = [ '*' ];
+        if ($this->query->columns === null) $this->query->columns = ['*'];
 
         $table = $this->wrappedTable();
 
@@ -571,7 +571,7 @@ class QueryBuilder extends Builder
 
         $params = compact('lft', 'rgt', 'from', 'to', 'height', 'distance');
 
-        $boundary = [ $from, $to ];
+        $boundary = $from, $to];
 
         $query = $this->toBase()->where(function (Query $inner) use ($boundary) {
             $inner->whereBetween($this->model->getLftName(), $boundary);
@@ -618,7 +618,7 @@ class QueryBuilder extends Builder
 
         $columns = [];
 
-        foreach ([ $this->model->getLftName(), $this->model->getRgtName() ] as $col) {
+        foreach ([$this->model->getLftName(), $this->model->getRgtName()] as $col) {
             $columns[$col] = $this->columnPatch($grammar->wrap($col), $params);
         }
 
@@ -681,7 +681,7 @@ class QueryBuilder extends Builder
         $checks['wrong_parent'] = $this->getWrongParentQuery();
 
         // Check for nodes that have missing parent
-        $checks['missing_parent' ] = $this->getMissingParentQuery();
+        $checks['missing_parent'] = $this->getMissingParentQuery();
 
         $query = $this->query->newQuery();
 
