@@ -570,7 +570,7 @@ class QueryBuilder extends Builder
 
         $params = compact('lft', 'rgt', 'from', 'to', 'height', 'distance');
 
-        $boundary = $from, $to];
+        $boundary = [$from, $to];
 
         $query = $this->toBase()->where(function (Query $inner) use ($boundary) {
             $inner->whereBetween($this->model->getLftName(), $boundary);
