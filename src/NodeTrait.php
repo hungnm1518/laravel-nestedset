@@ -217,7 +217,7 @@ trait NodeTrait
         $attributes = $this->newNestedSetQuery()->getNodeData($this->getKey());
 
         $this->attributes = array_merge($this->attributes, $attributes);
-//        $this->original = array_merge($this->original, $attributes);
+		// $this->original = array_merge($this->original, $attributes);
     }
 
     /**
@@ -698,6 +698,7 @@ trait NodeTrait
      */
     public function applyNestedSetScope($query, $table = null)
     {
+        $query->withoutGlobalScopes();
         if (!$scoped = $this->getScopeAttributes()) {
             return $query;
         }
@@ -707,8 +708,7 @@ trait NodeTrait
         }
 
         foreach ($scoped as $attribute) {
-            $query->where($table . '.' . $attribute, '=',
-                          $this->getAttributeValue($attribute));
+            $query->where($table . '.' . $attribute, '=', $this->getAttributeValue($attribute));
         }
 
         return $query;
@@ -808,6 +808,7 @@ trait NodeTrait
      *
      * @throws Exception If parent node doesn't exists
      */
+    /**
     public function setParentIdAttribute($value)
     {
         if ($this->getParentId() === $value) return;
@@ -818,7 +819,7 @@ trait NodeTrait
             $this->makeRoot();
         }
     }
-
+    */
     /**
      * Get whether node is root.
      *
@@ -1004,8 +1005,7 @@ trait NodeTrait
      */
     public function isDescendantOf(self $other)
     {
-        return $this->getLft() > $other->getLft() &&
-            $this->getLft() < $other->getRgt();
+        return $this->getLft() > $other->getLft() && $this->getLft() < $other->getRgt();
     }
 
     /**
@@ -1017,8 +1017,7 @@ trait NodeTrait
      */
     public function isSelfOrDescendantOf(self $other)
     {
-        return $this->getLft() >= $other->getLft() &&
-            $this->getLft() < $other->getRgt();
+        return $this->getLft() >= $other->getLft() && $this->getLft() < $other->getRgt();
     }
 
     /**
@@ -1178,7 +1177,7 @@ trait NodeTrait
      */
     protected function assertNodeExists(self $node)
     {
-        if (!$node->getLft() ||!$node->getRgt()) {
+        if (!$node->getLft() || !$node->getRgt()) {
             throw new LogicException('Node must exists.');
         }
 
@@ -1195,7 +1194,7 @@ trait NodeTrait
         }
 
         foreach ($scoped as $attr) {
-            if ($this->getAttribute($attr) != $node->getAttribute($attr)) {
+            if ($this->getAttribute($attr) !== $node->getAttribute($attr)) {
                 throw new LogicException('Nodes must be in the same scope');
             }
         }

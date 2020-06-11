@@ -35,8 +35,7 @@ class QueryBuilder extends Builder
 
         $query->where($this->model->getTable() . '.' . $this->model->getKeyName(), '=', $id);
 
-        $data = $query->first([$this->model->getLftName(),
-                                $this->model->getRgtName()]);
+        $data = $query->first([$this->model->getLftName(), $this->model->getRgtName()]);
 
         if (!$data && $required) {
             throw new ModelNotFoundException;
@@ -96,16 +95,17 @@ class QueryBuilder extends Builder
             $id = $id->getKey();
         } else {
             $valueQuery = $this->model
+				->withOutGlobalScopes()
                 ->newQuery()
                 ->toBase()
-                ->select("_.".$this->model->getRgtName())
-                ->from($this->model->getTable().' as _')
+                ->select('_.' . $this->model->getRgtName())
+                ->from($this->model->getTable() . ' as _')
                 ->where($this->model->getKeyName(), '=', $id)
                 ->limit(1);
 
             $this->query->mergeBindings($valueQuery);
 
-            $value = '('.$valueQuery->toSql().')';
+            $value = '(' . $valueQuery->toSql() . ')';
         }
 
         $this->query->whereNested(function ($inner) use ($value, $andSelf, $id, $keyName) {
@@ -114,7 +114,7 @@ class QueryBuilder extends Builder
 
             $inner->whereRaw("{$value} between {$wrappedTable}.{$lft} and {$wrappedTable}.{$rgt}");
 
-            if ( ! $andSelf) {
+            if (!$andSelf) {
                 $inner->where($keyName, '<>', $id);
             }
         }, $boolean);
@@ -214,9 +214,7 @@ class QueryBuilder extends Builder
      *
      * @return $this
      */
-    public function whereDescendantOf($id, $boolean = 'and', $not = false,
-                                      $andSelf = false
-    ) {
+    public function whereDescendantOf($id, $boolean = 'and', $not = false, $andSelf = false) {
         if (NestedSet::isNode($id)) {
             $data = $id->getBounds();
         } else {
@@ -225,7 +223,7 @@ class QueryBuilder extends Builder
         }
 
         // Don't include the node
-        if ( ! $andSelf) {
+        if (!$andSelf) {
             ++$data[0];
         }
 
@@ -322,15 +320,16 @@ class QueryBuilder extends Builder
             $this->query->addBinding($id->getLft());
         } else {
             $valueQuery = $this->model
+				->withOutGlobalScopes()
                 ->newQuery()
                 ->toBase()
-                ->select('_n.'.$this->model->getLftName())
-                ->from($this->model->getTable().' as _n')
-                ->where('_n.'.$this->model->getKeyName(), '=', $id);
+                ->select('_n.' . $this->model->getLftName())
+                ->from($this->model->getTable() . ' as _n')
+                ->where('_n.' . $this->model->getKeyName(), '=', $id);
 
             $this->query->mergeBindings($valueQuery);
 
-            $value = '('.$valueQuery->toSql().')';
+            $value = '(' . $valueQuery->toSql() . ')';
         }
 
         list($lft,) = $this->wrappedColumns();
@@ -412,7 +411,7 @@ class QueryBuilder extends Builder
             ->newScopedQuery('_d')
             ->toBase()
             ->selectRaw('count(1) - 1')
-            ->from($this->model->getTable().' as '.$alias)
+            ->from($this->model->getTable() . ' as ' . $alias)
             ->whereRaw("{$table}.{$lft} between {$wrappedAlias}.{$lft} and {$wrappedAlias}.{$rgt}");
 
         $this->query->selectSub($query, $as);
@@ -640,7 +639,7 @@ class QueryBuilder extends Builder
         extract($params);
 
         /** @var int $height */
-        if ($height > 0) $height = '+'.$height;
+        if ($height > 0) $height = '+' . $height;
 
         if (isset($cut)) {
             return new Expression("case when {$col} >= {$cut} then {$col}{$height} else {$col} end");
@@ -651,7 +650,7 @@ class QueryBuilder extends Builder
         /** @var int $rgt */
         /** @var int $from */
         /** @var int $to */
-        if ($distance > 0) $distance = '+'.$distance;
+        if ($distance > 0) $distance = '+' . $distance;
 
         return new Expression("case ".
                               "when {$col} between {$lft} and {$rgt} then {$col}{$distance} ". // Move the node
@@ -896,7 +895,7 @@ class QueryBuilder extends Builder
         $cut = self::reorderNodes($dictionary, $updated, $parentId, $cut);
 
         // Save nodes that have invalid parent as roots
-        while ( ! empty($dictionary)) {
+        while (!empty($dictionary)) {
             $dictionary[null] = reset($dictionary);
 
             unset($dictionary[key($dictionary)]);
@@ -929,7 +928,7 @@ class QueryBuilder extends Builder
     protected static function reorderNodes(
         array &$dictionary, array &$updated, $parentId = null, $cut = 1
     ) {
-        if ( ! isset($dictionary[$parentId])) {
+        if (!isset($dictionary[$parentId])) {
             return $cut;
         }
 
@@ -982,8 +981,8 @@ class QueryBuilder extends Builder
         $this->buildRebuildDictionary($dictionary, $data, $existing, $parentId);
 
         /** @var Model|NodeTrait $model */
-        if ( ! empty($existing)) {
-            if ($delete && ! $this->model->usesSoftDelete()) {
+        if (!empty($existing)) {
+            if ($delete && !$this->model->usesSoftDelete()) {
                 $this->model
                     ->newScopedQuery()
                     ->whereIn($this->model->getKeyName(), array_keys($existing))
@@ -992,8 +991,7 @@ class QueryBuilder extends Builder
                 foreach ($existing as $model) {
                     $dictionary[$model->getParentId()][] = $model;
 
-                    if ($delete && $this->model->usesSoftDelete() &&
-                        ! $model->{$model->getDeletedAtColumn()}
+                    if ($delete && $this->model->usesSoftDelete() && !$model->{$model->getDeletedAtColumn()}
                     ) {
                         $time = $this->model->fromDateTime($this->model->freshTimestamp());
 
@@ -1034,13 +1032,13 @@ class QueryBuilder extends Builder
         foreach ($data as $itemData) {
             /** @var NodeTrait|Model $model */
 
-            if ( ! isset($itemData[$keyName])) {
+            if (!isset($itemData[$keyName])) {
                 $model = $this->model->newInstance($this->model->getAttributes());
 
                 // Set some values that will be fixed later
                 $model->rawNode(0, 0, $parentId);
             } else {
-                if ( ! isset($existing[$key = $itemData[$keyName]])) {
+                if (!isset($existing[$key = $itemData[$keyName]])) {
                     throw new ModelNotFoundException;
                 }
 
@@ -1056,7 +1054,7 @@ class QueryBuilder extends Builder
 
             $dictionary[$parentId][] = $model;
 
-            if ( ! isset($itemData['children'])) continue;
+            if (!isset($itemData['children'])) continue;
 
             $this->buildRebuildDictionary($dictionary,
                                           $itemData['children'],
