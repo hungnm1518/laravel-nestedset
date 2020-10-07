@@ -648,7 +648,7 @@ For prior Laravel versions:
 
 ```php
 ...
-use Kalnoy\Nestedset\NestedSet;
+use HungNM\Nestedset\NestedSet;
 
 Schema::create('table', function (Blueprint $table) {
     ...
@@ -660,7 +660,7 @@ To drop columns:
 
 ```php
 ...
-use Kalnoy\Nestedset\NestedSet;
+use HungNM\Nestedset\NestedSet;
 
 Schema::table('table', function (Blueprint $table) {
     NestedSet::dropColumns($table);
@@ -669,10 +669,10 @@ Schema::table('table', function (Blueprint $table) {
 
 #### The model
 
-Your model should use `Kalnoy\Nestedset\NodeTrait` trait to enable nested sets:
+Your model should use `HungNM\Nestedset\NodeTrait` trait to enable nested sets:
 
 ```php
-use Kalnoy\Nestedset\NodeTrait;
+use HungNM\Nestedset\NodeTrait;
 
 class Foo extends Model {
     use NodeTrait;
@@ -728,7 +728,7 @@ MyModel::fixTree();
 License
 =======
 
-Copyright (c) 2017 Alexander Kalnoy
+Copyright (c) 2017 Alexander HungNM
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

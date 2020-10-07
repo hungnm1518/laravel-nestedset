@@ -1,6 +1,6 @@
 <?php
 
-namespace Kalnoy\Nestedset;
+namespace HungNM\Nestedset;
 
 use Illuminate\Database\Schema\Blueprint;
 

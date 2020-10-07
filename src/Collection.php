@@ -1,6 +1,6 @@
 <?php
 
-namespace Kalnoy\Nestedset;
+namespace HungNM\Nestedset;
 
 use Illuminate\Database\Eloquent\Collection as BaseCollection;
 use Illuminate\Database\Eloquent\Model;

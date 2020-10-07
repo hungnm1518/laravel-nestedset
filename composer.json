@@ -1,5 +1,5 @@
 {
-    "name": "hungnm144/nestedset",
+    "name": "hungnm1518/nestedset",
     "description": "Nested Set Model for Laravel 5.7 and up",
     "keywords": ["laravel", "nested sets", "nsm", "database", "hierarchy"],
     "license": "MIT",
@@ -20,7 +20,7 @@
 
     "autoload": {
         "psr-4": {
-            "Kalnoy\\Nestedset\\": "src/"
+            "HungNM\\Nestedset\\": "src/"
         }
     },
 
@@ -38,7 +38,7 @@
 
         "laravel": {
             "providers": [
-                "Kalnoy\\Nestedset\\NestedSetServiceProvider"
+                "HungNM\\Nestedset\\NestedSetServiceProvider"
             ]
         }
     }

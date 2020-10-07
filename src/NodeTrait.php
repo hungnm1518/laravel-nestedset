@@ -1,6 +1,6 @@
 <?php
 
-namespace Kalnoy\Nestedset;
+namespace HungNM\Nestedset;
 
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -267,7 +267,7 @@ trait NodeTrait
     /**
      * Get the node siblings and the node itself.
      *
-     * @return \Kalnoy\Nestedset\QueryBuilder
+     * @return \HungNM\Nestedset\QueryBuilder
      */
     public function siblingsAndSelf()
     {
