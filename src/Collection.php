@@ -33,6 +33,8 @@ class Collection extends BaseCollection
                 $child->setRelation('parent', $node);
             }
         }
+		$node->setRelation('children', BaseCollection::make($children));
+	
 
         return $this;
     }
